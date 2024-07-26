@@ -3,7 +3,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { constants } from 'buffer';
 import { join } from 'path';
-import { mkdirp } from 'mkdirp';
+import * as fs from 'fs'
 import  * as sharp from 'sharp';
 import { InjectModel } from '@nestjs/mongoose';
 import { Ticket ,Imagen} from './schemas/ticket.echema';
@@ -39,10 +39,15 @@ export class TicketService {
 
  async convertirImagenWbp(imagen:Express.Multer.File[]){
   const rutasImg:string[]=[]
+
     const outputDir = join(__dirname, '../../uploads/webp');
+    if(!fs.existsSync(outputDir)){
+        fs.mkdirSync(outputDir,{ recursive: true })
+    }
+     
     for(let file of imagen){
       const outputFilePath = join(outputDir, `${file.fieldname}-${Date.now()}.webp`);
-       await   sharp(file.buffer).toFile(outputFilePath);
+       await  sharp(file.buffer).toFile(outputFilePath);
       rutasImg.push(outputFilePath)
     }
     return rutasImg
