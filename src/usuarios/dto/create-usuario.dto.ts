@@ -10,6 +10,6 @@ export class CreateUsuarioDto {
     usuario:string
     @IsString()
     contrasena:string
-
-
+    
+    
 }
