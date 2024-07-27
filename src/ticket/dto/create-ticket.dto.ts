@@ -1,5 +1,6 @@
-import { IsEnum, IsOptional, IsString } from "class-validator"
+import { IsEnum, IsMongoId, IsOptional, IsString } from "class-validator"
 import { PrioridadEnum } from "../enum/prioridad.enum"
+import { Types } from "mongoose"
 
 
 export class CreateTicketDto {
@@ -8,6 +9,9 @@ export class CreateTicketDto {
         @IsEnum(PrioridadEnum)
         prioridad:string
 
+        @IsMongoId()
+        sucursal:Types.ObjectId
+        
         imagen:Express.Multer.File[]=[]
 
 

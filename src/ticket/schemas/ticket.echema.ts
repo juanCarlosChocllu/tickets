@@ -10,6 +10,7 @@ export class Ticket {
     prioridad:string
     @Prop({type:String, enum:EstadoEnum,   default: EstadoEnum.Pendiente})
     estado:EstadoEnum
+    
     @Prop({type:Types.ObjectId, ref:'Sucursal'})
      sucursal:Types.ObjectId
 
