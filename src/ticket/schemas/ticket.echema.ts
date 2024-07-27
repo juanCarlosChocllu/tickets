@@ -12,7 +12,10 @@ export class Ticket {
     estado:EstadoEnum
     
     @Prop({type:Types.ObjectId, ref:'Sucursal'})
-     sucursal:Types.ObjectId
+    sucursal:Types.ObjectId
+        
+    @Prop({type:Types.ObjectId, ref:'Area'})
+    area:Types.ObjectId
 
     @Prop({type:Date, default:Date.now()})
     fechaCreacion:Date

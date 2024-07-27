@@ -12,6 +12,9 @@ export class CreateTicketDto {
         @IsMongoId()
         sucursal:Types.ObjectId
         
+        @IsMongoId()
+        area:Types.ObjectId
+         
         imagen:Express.Multer.File[]=[]
 
 

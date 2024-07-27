@@ -13,6 +13,8 @@ export class CreateUsuarioDto {
     contrasena:string
     @IsMongoId()
     sucursal:Types.ObjectId
+    @IsMongoId()
+    area:Types.ObjectId
 
 
 }

@@ -13,6 +13,9 @@ export class Usuario {
     contrasena:string
     @Prop({type:Types.ObjectId, ref:'Sucursal'})
     sucursal:Types.ObjectId
+    
+    @Prop({type:Types.ObjectId, ref:'area'})
+    area:Types.ObjectId
     @Prop({type:Date, default:Date.now()})
     fechaCreacion:Date
 }
