@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
+import { Types } from "mongoose"
 
 @Schema()
 export class Usuario {
@@ -10,6 +11,8 @@ export class Usuario {
     usuario:string
     @Prop()
     contrasena:string
+    @Prop({type:Types.ObjectId, ref:'Sucursal'})
+    sucursal:Types.ObjectId
     @Prop({type:Date, default:Date.now()})
     fechaCreacion:Date
 }

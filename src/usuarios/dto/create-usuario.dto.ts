@@ -1,4 +1,5 @@
-import { IsString, IsStrongPassword } from "class-validator"
+import { IsMongoId, IsString, IsStrongPassword } from "class-validator"
+import { Types } from "mongoose"
 
 
 export class CreateUsuarioDto {
@@ -10,6 +11,8 @@ export class CreateUsuarioDto {
     usuario:string
     @IsString()
     contrasena:string
-    
-    
+    @IsMongoId()
+    sucursal:Types.ObjectId
+
+
 }

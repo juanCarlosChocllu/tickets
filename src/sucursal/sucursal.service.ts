@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,7 +9,8 @@ import { Model } from 'mongoose';
 export class SucursalService {
   constructor(@InjectModel(Sucursal.name) private readonly SucursalSchema:Model<Sucursal> ){}
   create(createSucursalDto: CreateSucursalDto) {
-    return 'This action adds a new sucursal';
+    this.SucursalSchema.create(createSucursalDto)
+    return { status:HttpStatus.CREATED};
   }
 
   findAll() {
