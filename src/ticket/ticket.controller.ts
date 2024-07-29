@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -7,6 +7,7 @@ import * as sharp from 'sharp'
 import * as mkdirp from 'mkdirp';
 import { configuracionMulter } from './util/multer';
 import { join } from 'path';
+import { validarImagenes } from './util/validar.imagenes';
 
 @Controller('ticket')
 export class TicketController {
@@ -16,6 +17,7 @@ export class TicketController {
   @Post("create")
   @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
   create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {
+     validarImagenes(files)
     createTicketDto.imagen= files
     return this.ticketService.create(createTicketDto)
   }

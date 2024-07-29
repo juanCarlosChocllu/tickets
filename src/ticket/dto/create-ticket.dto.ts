@@ -6,8 +6,10 @@ import { Types } from "mongoose"
 export class CreateTicketDto {
         @IsString()
         descripcion:string
+        
         @IsEnum(PrioridadEnum)
         prioridad:string
+
         @IsMongoId()
         area:Types.ObjectId
          

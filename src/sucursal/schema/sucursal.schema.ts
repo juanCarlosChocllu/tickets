@@ -5,8 +5,10 @@ import { Flag } from "src/enums/enum.flag"
 export class Sucursal {
     @Prop()
     nombre:string
+    
     @Prop({type:Date, default:Date.now()})
     fechaCreacion:Date
+
     @Prop({type:String, enum:Flag, default:Flag.nuevo })
     flag:Flag
 }

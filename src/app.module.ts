@@ -23,5 +23,6 @@ import { AreasModule } from './areas/areas.module';
     AreasModule,],
   controllers: [],
   providers: [],
+  
 })
 export class AppModule {}
