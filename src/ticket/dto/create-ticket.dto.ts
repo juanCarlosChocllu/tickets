@@ -8,10 +8,6 @@ export class CreateTicketDto {
         descripcion:string
         @IsEnum(PrioridadEnum)
         prioridad:string
-
-        @IsMongoId()
-        sucursal:Types.ObjectId
-        
         @IsMongoId()
         area:Types.ObjectId
          

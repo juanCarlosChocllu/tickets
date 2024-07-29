@@ -4,6 +4,9 @@ import { Flag } from "src/enums/enum.flag"
 
 @Schema()
 export class Usuario {
+    toObject(): { [x: string]: any; contrasena: any } {
+      throw new Error('Method not implemented.')
+    }
     @Prop()
     nombre:string
     @Prop()

@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Usuario } from './schema/usuario.schema';
 import { Model } from 'mongoose';
 import *  as bcrypt from 'bcrypt'  
+import { Flag } from 'src/enums/enum.flag';
 
 @Injectable()
 export class UsuariosService {
@@ -15,10 +16,13 @@ export class UsuariosService {
     createUsuarioDto.contrasena = await bcrypt.hash(createUsuarioDto.contrasena, 10)
     await this.UsuarioSchema.create(createUsuarioDto)
     return  {status:HttpStatus.CREATED } ;
-  }
 
-  findAll() {
-    return `This action returns all usuarios`;
+
+
+
+  } async findAll() {
+  const usuarios:Usuario[] =await this.UsuarioSchema.find({flag:Flag.nuevo}).select('-contrasena') ;
+  return usuarios
   }
 
   findOne(id: number) {

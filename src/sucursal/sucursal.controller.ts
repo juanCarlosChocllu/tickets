@@ -12,7 +12,7 @@ export class SucursalController {
     return this.sucursalService.create(createSucursalDto);
   }
 
-  @Get()
+  @Get('listar')
   findAll() {
     return this.sucursalService.findAll();
   }

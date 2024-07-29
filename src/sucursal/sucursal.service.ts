@@ -4,6 +4,7 @@ import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Sucursal } from './schema/sucursal.schema';
 import { Model } from 'mongoose';
+import { Flag } from 'src/enums/enum.flag';
 
 @Injectable()
 export class SucursalService {
@@ -14,7 +15,7 @@ export class SucursalService {
   }
 
   findAll() {
-    return `This action returns all sucursal`;
+    return  this.SucursalSchema.find({flag:Flag.nuevo}).select('nombre');
   }
 
   findOne(id: number) {

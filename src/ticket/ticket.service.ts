@@ -8,6 +8,7 @@ import  * as sharp from 'sharp';
 import { InjectModel } from '@nestjs/mongoose';
 import { Ticket ,Imagen} from './schemas/ticket.echema';
 import { Model, Types } from 'mongoose';
+import { Flag } from 'src/enums/enum.flag';
 
 @Injectable()
 export class TicketService {
@@ -39,12 +40,10 @@ export class TicketService {
 
  async convertirImagenWbp(imagen:Express.Multer.File[]){
   const rutasImg:string[]=[]
-
     const outputDir = join(__dirname, '../../uploads/webp');
     if(!fs.existsSync(outputDir)){
         fs.mkdirSync(outputDir,{ recursive: true })
     }
-     
     for(let file of imagen){
       const outputFilePath = join(outputDir, `${file.fieldname}-${Date.now()}.webp`);
        await  sharp(file.buffer).toFile(outputFilePath);
@@ -52,6 +51,7 @@ export class TicketService {
     }
     return rutasImg
   }
+
  async findAll() {
     const ticket = await this.TicketSchema.aggregate([
       {
@@ -61,6 +61,9 @@ export class TicketService {
           foreignField:'ticket',
           as : 'imagenes'
         }
+      },
+      {
+        $match:{flag:Flag.nuevo}
       }
     ])
     return ticket ;
