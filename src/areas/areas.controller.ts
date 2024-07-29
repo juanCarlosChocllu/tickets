@@ -7,12 +7,12 @@ import { UpdateAreaDto } from './dto/update-area.dto';
 export class AreasController {
   constructor(private readonly areasService: AreasService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createAreaDto: CreateAreaDto) {
     return this.areasService.create(createAreaDto);
   }
 
-  @Get()
+  @Get('listar')
   findAll() {
     return this.areasService.findAll();
   }

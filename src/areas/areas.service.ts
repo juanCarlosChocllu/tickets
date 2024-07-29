@@ -4,6 +4,7 @@ import { UpdateAreaDto } from './dto/update-area.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Area } from './schemas/area.schema';
 import { Model } from 'mongoose';
+import { Flag } from 'src/enums/enum.flag';
 
 @Injectable()
 export class AreasService {
@@ -14,7 +15,7 @@ export class AreasService {
   }
 
   findAll() {
-    return `This action returns all areas`;
+    return  this.AreaSchema.find({flag:Flag.nuevo}).select('nombre');
   }
 
   findOne(id: number) {

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { Types } from "mongoose"
 import { EstadoEnum } from "../enum/estado.enum"
+import { Flag } from "src/enums/enum.flag"
 
 @Schema()
 export class Ticket {
@@ -19,6 +20,8 @@ export class Ticket {
 
     @Prop({type:Date, default:Date.now()})
     fechaCreacion:Date
+    @Prop({type:String, enum:Flag, default:Flag.nuevo })
+    flag:Flag
 }
 
 

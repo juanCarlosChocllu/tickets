@@ -5,13 +5,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({})
+  app.enableCors()
+  app.setGlobalPrefix('api')
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Tickets ')
     .setDescription('sistema de tickets')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('tickes')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
