@@ -6,7 +6,7 @@ import { Types } from "mongoose"
 export class CreateTicketDto {
         @IsString()
         descripcion:string
-        
+
         @IsEnum(PrioridadEnum)
         prioridad:string
 
@@ -14,8 +14,5 @@ export class CreateTicketDto {
         area:Types.ObjectId
          
         imagen:Express.Multer.File[]=[]
-
-
-        
 
 }
