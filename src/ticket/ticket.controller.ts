@@ -3,10 +3,7 @@ import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import * as sharp from 'sharp'
-import * as mkdirp from 'mkdirp';
 import { configuracionMulter } from './util/multer';
-import { join } from 'path';
 import { validarImagenes } from './util/validar.imagenes';
 
 @Controller('ticket')
@@ -16,11 +13,13 @@ export class TicketController {
   
   @Post("create")
   @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
-  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {
-     validarImagenes(files)
+  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {   
+    validarImagenes(files)
     createTicketDto.imagen= files
     return this.ticketService.create(createTicketDto)
   }
+
+
   @Get('listar')
   findAll() {
     return this.ticketService.findAll();

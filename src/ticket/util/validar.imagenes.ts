@@ -4,7 +4,7 @@ import * as path from 'path';
  export function validarImagenes(file: Array<Express.Multer.File>){
      const extencionesValidas:string[]= ['.png','.jpg', '.PNG', '.JPG']   
 
-    if(file.length === 0){
+    if( file === undefined || file.length === 0 ){
         throw new BadRequestException('Imagenes requeridas');
     }
     for(let img of file){
