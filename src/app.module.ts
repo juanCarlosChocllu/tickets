@@ -11,7 +11,8 @@ import { join } from 'path';
 
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads/webp'),
+      rootPath: join(__dirname, '..', 'uploads', 'webp'),
+      serveRoot: '/uploads/webp', 
     }),
     MongooseModule.forRoot('mongodb://localhost:27017/sistema-tickets'),
 
