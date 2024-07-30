@@ -2,7 +2,7 @@ import { BadRequestException } from "@nestjs/common";
 import * as path from 'path';
 
  export function validarImagenes(file: Array<Express.Multer.File>){
-     const extencionesValidas:string[]= ['.png','.jpg', '.PNG', '.JPG']   
+     const extencionesValidas:string[]=['.png','.jpg', '.jpeg', '.PNG', '.JPG','.JPEG']  
     if( file === undefined || file.length === 0 ){
         throw new BadRequestException('Imagenes requeridas');
     }

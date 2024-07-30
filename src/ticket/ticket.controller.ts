@@ -13,7 +13,9 @@ export class TicketController {
   
   @Post("create")
   @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
-  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {   
+  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {
+    console.log(files);
+       
     validarImagenes(files)
     createTicketDto.imagen= files
     return this.ticketService.create(createTicketDto)

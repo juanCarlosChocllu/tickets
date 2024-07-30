@@ -5,9 +5,14 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { SucursalModule } from './sucursal/sucursal.module';
 import { AutenticacionModule } from './autenticacion/autenticacion.module';
 import { AreasModule } from './areas/areas.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
 
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads/webp'),
+    }),
     MongooseModule.forRoot('mongodb://localhost:27017/sistema-tickets'),
 
     TicketModule,
