@@ -30,6 +30,7 @@ export class TicketService {
   async createImagen(ticket:Types.ObjectId,createTicketDto:CreateTicketDto ){
     const img = this.convertirImagenWbp(createTicketDto.imagen)
     for(let i of await img){
+      
       const imgDto ={
         ticket: ticket._id,
         urlImagen:i
@@ -45,9 +46,10 @@ export class TicketService {
         fs.mkdirSync(outputDir,{ recursive: true })
     }
     for(let file of imagen){
-      const outputFilePath = join(outputDir, `${file.fieldname}-${Date.now()}.webp`);
+      const nombreImagen=`${file.fieldname}-${Date.now()}.webp`
+      const outputFilePath = join(outputDir,nombreImagen); 
        await  sharp(file.buffer).toFile(outputFilePath);
-      rutasImg.push(outputFilePath)
+      rutasImg.push(nombreImagen)
     }
     return rutasImg
   }
