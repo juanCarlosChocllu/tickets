@@ -17,7 +17,7 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
-  @Get(':id')
+  /*@Get(':id')
   findOne(@Param('id') id: string) {
     return this.usuariosService.findOne(+id);
   }
@@ -30,5 +30,5 @@ export class UsuariosController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuariosService.remove(+id);
-  }
+  }*/
 }

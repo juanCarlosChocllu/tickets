@@ -5,6 +5,9 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { configuracionMulter } from './util/multer';
 import { validarImagenes } from './util/validar.imagenes';
+import { IsMongoId } from 'class-validator';
+import { ParametrosTicketDto } from './dto/paremetro-ticket.dto';
+import { Types } from 'mongoose';
 
 @Controller('ticket')
 export class TicketController {
@@ -14,6 +17,8 @@ export class TicketController {
   @Post("create")
   @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
   create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {
+    console.log(files);
+    
     validarImagenes(files)
     createTicketDto.imagen= files
     return this.ticketService.create(createTicketDto)
@@ -27,16 +32,24 @@ export class TicketController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.ticketService.findOne(+id);
+    return this.ticketService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
-    return this.ticketService.update(+id, updateTicketDto);
+  @Patch('actualizar/:id')
+  @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
+  update(@UploadedFiles() files : Array<Express.Multer.File>,@Param('id')id: string, @Body() updateTicketDto: UpdateTicketDto) {
+      if(files && files.length > 0 && updateTicketDto.idImagenes && updateTicketDto.idImagenes.length > 0){
+        validarImagenes(files)
+        updateTicketDto.imagen = files
+      }
+      if (typeof updateTicketDto.idImagenes === 'string') {
+        updateTicketDto.idImagenes = JSON.parse(updateTicketDto.idImagenes).map((id: string) => id);
+      }
+    return this.ticketService.update(id, updateTicketDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ticketService.remove(+id);
+  @Delete('delete/:id')
+  softDelete(@Param('id') id: string) {
+    return this.ticketService.softDelete(id);
   }
 }

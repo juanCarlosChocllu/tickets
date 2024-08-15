@@ -17,7 +17,7 @@ export class AreasController {
     return this.areasService.findAll();
   }
 
-  @Get(':id')
+ /* @Get(':id')
   findOne(@Param('id') id: string) {
     return this.areasService.findOne(+id);
   }
@@ -30,5 +30,5 @@ export class AreasController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.areasService.remove(+id);
-  }
+  }*/
 }

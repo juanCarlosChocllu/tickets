@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { constants } from 'buffer';
@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Ticket ,Imagen} from './schemas/ticket.echema';
 import { Model, Types } from 'mongoose';
 import { Flag } from 'src/enums/enum.flag';
+import { ParametrosTicketDto } from './dto/paremetro-ticket.dto';
 
 @Injectable()
 export class TicketService {
@@ -37,6 +38,7 @@ export class TicketService {
       }
      await this.ImagentSchema.create(imgDto)
   }
+
   }
 
  async convertirImagenWbp(imagen:Express.Multer.File[]){
@@ -53,6 +55,8 @@ export class TicketService {
     }
     return rutasImg
   }
+
+
 
  async findAll() {
     const ticket = await this.TicketSchema.aggregate([
@@ -71,15 +75,75 @@ export class TicketService {
     return ticket ;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  findOne(id: string) {
+    const ticket = this.TicketSchema.aggregate([
+      {
+        $lookup:{
+          from:'imagens',
+          foreignField:'ticket',
+          localField:'_id',
+          as:'imagenes'
+        }
+       
+      },
+      {
+        $match:{_id:new Types.ObjectId(id),flag:Flag.nuevo}
+      }
+    
+    ])
+    if(!ticket){
+      throw new NotFoundException('Ticket no encontrada')
+
+    }
+    return ticket;
   }
 
-  update(id: number, updateTicketDto: UpdateTicketDto) {
-    return `This action updates a #${id} ticket`;
+  async update(id:string, updateTicketDto: UpdateTicketDto) {
+    const ticket = await this.TicketSchema.findOne({_id:id}).exec()
+    if(!ticket){
+      throw new NotFoundException('Ticket no encontrada')
+    }
+
+
+ if(updateTicketDto.idImagenes && updateTicketDto.idImagenes.length > 0 && updateTicketDto.imagen && updateTicketDto.imagen.length>0 ){
+  if(updateTicketDto.idImagenes.length > updateTicketDto.imagen.length || updateTicketDto.imagen.length > updateTicketDto.idImagenes.length){
+    throw new BadRequestException('mamoncito no')
+        }
+  for(let id of updateTicketDto.idImagenes){
+     const img = await  this.ImagentSchema.findOne({_id:new Types.ObjectId(id)}).exec()
+      if(!img){
+        throw new NotFoundException('Imagen no encontrada')
+      }
+      this.updateImagen(id, updateTicketDto) 
+  } 
+ }
+    await   this.TicketSchema.findByIdAndUpdate(id, updateTicketDto).exec()
+    return   {status:HttpStatus.OK};
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
+
+
+  async  softDelete(id: string) {
+    const ticket =  await this.TicketSchema.findOne({_id:id, flag:Flag.nuevo})
+    if(!ticket){
+      throw new NotFoundException('Ticket no encontrada')
+    }
+    const data=  await this.TicketSchema.findByIdAndUpdate(id, {flag:Flag.eliminado})
+    return {status:HttpStatus.OK, mensage:'Ticket elimanado correctamente'};
   }
+
+  async updateImagen(id:string,updateTicketDto :UpdateTicketDto ){
+    const img = this.convertirImagenWbp(updateTicketDto.imagen)
+    for(let i of await img){
+    const data=  await this.ImagentSchema.findByIdAndUpdate(id,{urlImagen: i})
+    const outputDir = join(__dirname, '../../uploads/webp/' + data.urlImagen);
+    if(fs.existsSync(outputDir)){
+       fs.unlinkSync(outputDir)     
+    }
+  }
+  }
+
+
+
+
 }

@@ -17,7 +17,7 @@ export class SucursalController {
     return this.sucursalService.findAll();
   }
 
-  @Get(':id')
+ /* @Get(':id')
   findOne(@Param('id') id: string) {
     return this.sucursalService.findOne(+id);
   }
@@ -30,5 +30,5 @@ export class SucursalController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.sucursalService.remove(+id);
-  }
+  }*/
 }
