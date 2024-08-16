@@ -5,9 +5,8 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { configuracionMulter } from './util/multer';
 import { validarImagenes } from './util/validar.imagenes';
-import { IsMongoId } from 'class-validator';
-import { ParametrosTicketDto } from './dto/paremetro-ticket.dto';
 import { Types } from 'mongoose';
+import { MongoIdValidationPipe } from 'src/util/validar.param.util';
 
 @Controller('ticket')
 export class TicketController {
@@ -16,9 +15,7 @@ export class TicketController {
   
   @Post("create")
   @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
-  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {
-    console.log(files);
-    
+  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {    
     validarImagenes(files)
     createTicketDto.imagen= files
     return this.ticketService.create(createTicketDto)
@@ -31,13 +28,13 @@ export class TicketController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id',MongoIdValidationPipe) id: string) {
     return this.ticketService.findOne(id);
   }
 
   @Patch('actualizar/:id')
   @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
-  update(@UploadedFiles() files : Array<Express.Multer.File>,@Param('id')id: string, @Body() updateTicketDto: UpdateTicketDto) {
+  update(@UploadedFiles() files : Array<Express.Multer.File>,@Param('id', MongoIdValidationPipe)id: string, @Body() updateTicketDto: UpdateTicketDto) {
       if(files && files.length > 0 && updateTicketDto.idImagenes && updateTicketDto.idImagenes.length > 0){
         validarImagenes(files)
         updateTicketDto.imagen = files
@@ -49,7 +46,7 @@ export class TicketController {
   }
 
   @Delete('delete/:id')
-  softDelete(@Param('id') id: string) {
+  softDelete(@Param('id', MongoIdValidationPipe) id: string) {
     return this.ticketService.softDelete(id);
   }
 }

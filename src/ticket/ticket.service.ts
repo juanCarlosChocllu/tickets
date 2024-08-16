@@ -75,8 +75,8 @@ export class TicketService {
     return ticket ;
   }
 
-  findOne(id: string) {
-    const ticket = this.TicketSchema.aggregate([
+  async findOne(id: string) {
+    const ticket = await this.TicketSchema.aggregate([
       {
         $lookup:{
           from:'imagens',
@@ -90,8 +90,9 @@ export class TicketService {
         $match:{_id:new Types.ObjectId(id),flag:Flag.nuevo}
       }
     
-    ])
-    if(!ticket){
+    ]).exec()
+    
+    if(ticket.length <= 0 ){
       throw new NotFoundException('Ticket no encontrada')
 
     }
