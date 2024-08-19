@@ -43,12 +43,17 @@ export class TicketService {
   }
 
  async convertirImagenWbp(imagen:Express.Multer.File[]){
+  console.log(imagen.length);
+  
   const rutasImg:string[]=[]
     const outputDir = join(__dirname, '../../uploads/webp');
     if(!fs.existsSync(outputDir)){
         fs.mkdirSync(outputDir,{ recursive: true })
     }
+    
     for(let file of imagen){
+   ;
+   
       const nombreImagen=`${file.fieldname}-${Date.now()}.webp`
       const outputFilePath = join(outputDir,nombreImagen); 
        await  sharp(file.buffer).toFile(outputFilePath);
@@ -102,7 +107,7 @@ export class TicketService {
     return ticket;
   }
 
-  async update(id:string, updateTicketDto: UpdateTicketDto) {
+  async update(id:string, updateTicketDto: UpdateTicketDto) { 
     const ticket = await this.TicketSchema.findOne({_id:id}).exec()
     if(!ticket){
       throw new NotFoundException('Ticket no encontrada')
@@ -113,13 +118,17 @@ export class TicketService {
   if(updateTicketDto.idImagenes.length > updateTicketDto.imagen.length || updateTicketDto.imagen.length > updateTicketDto.idImagenes.length){
     throw new BadRequestException('mamoncito no')
         }
+
   for(let id of updateTicketDto.idImagenes){
+   
      const img = await  this.ImagentSchema.findOne({_id:new Types.ObjectId(id)}).exec()
       if(!img){
         throw new NotFoundException('Imagen no encontrada')
       }
-      this.updateImagen(id, updateTicketDto) 
   } 
+  this.updateImagen(updateTicketDto) 
+
+
  }
     await   this.TicketSchema.findByIdAndUpdate(id, updateTicketDto).exec()
     return   {status:HttpStatus.OK};
@@ -136,23 +145,27 @@ export class TicketService {
     return {status:HttpStatus.OK, mensage:'Ticket elimanado correctamente'};
   }
 
-  async updateImagen(id:string,updateTicketDto :UpdateTicketDto ){
-    const img = this.convertirImagenWbp(updateTicketDto.imagen)
-    for(let i of await img){
-    const data=  await this.ImagentSchema.findByIdAndUpdate(id,{urlImagen: i})
-    const outputDir = join(__dirname, '../../uploads/webp/' + data.urlImagen);
+  async updateImagen(updateTicketDto :UpdateTicketDto ){
+    const {idImagenes, imagen} =updateTicketDto    
+    const img = await this.convertirImagenWbp(imagen)
+    
+    for (let index = 0; index < idImagenes.length; index++) {
+        let i = img[index]
+       const data=  await this.ImagentSchema.findByIdAndUpdate(idImagenes[index],{urlImagen: i})
+    const outputDir = join(__dirname, '../../uploads/webp/' + data.urlImagen);  
     if(fs.existsSync(outputDir)){
        fs.unlinkSync(outputDir)     
     }
   }
+  
   }
 
   
 
   async listarTicketArea(user:payloadI){
       const area = user.area
-      console.log(area);
       
+
       const tickets =  this.TicketSchema.aggregate([
         {
           $match:{ area:area, flag:Flag.nuevo }
