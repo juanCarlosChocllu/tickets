@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAreaDto } from './dto/create-area.dto';
 import { UpdateAreaDto } from './dto/update-area.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,7 +9,11 @@ import { Flag } from 'src/enums/enum.flag';
 @Injectable()
 export class AreasService {
   constructor(@InjectModel(Area.name) private readonly AreaSchema:Model<Area>){}
-  create(createAreaDto: CreateAreaDto) {
+  async create(createAreaDto: CreateAreaDto) {
+    const areaExiste= await this.AreaSchema.findOne({nombre:createAreaDto.nombre, flag:Flag.nuevo}).exec()
+    if(areaExiste){
+      throw new ConflictException('Ya existe el area')
+    }
     this.AreaSchema.create(createAreaDto)
     return  {estatus:HttpStatus.CREATED};
   }

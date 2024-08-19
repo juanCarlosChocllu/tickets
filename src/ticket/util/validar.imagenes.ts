@@ -7,7 +7,6 @@ import * as path from 'path';
         throw new BadRequestException('Imagenes requeridas');
     }
     for(let img of file){
-        const formatoInvalido=[]
             const extenciones = path.extname(img.originalname)
             const esValida=  extencionesValidas.includes(extenciones)
             if(esValida== false){

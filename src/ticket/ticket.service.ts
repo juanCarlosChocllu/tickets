@@ -10,6 +10,7 @@ import { Ticket ,Imagen} from './schemas/ticket.echema';
 import { Model, Types } from 'mongoose';
 import { Flag } from 'src/enums/enum.flag';
 import { ParametrosTicketDto } from './dto/paremetro-ticket.dto';
+import { payloadI } from 'src/autenticacion/interface/payload.interface';
 
 @Injectable()
 export class TicketService {
@@ -58,7 +59,9 @@ export class TicketService {
 
 
 
- async findAll() {
+ async findAll(user:payloadI) {
+
+  
     const ticket = await this.TicketSchema.aggregate([
       {
         $lookup:{
@@ -69,7 +72,7 @@ export class TicketService {
         }
       },
       {
-        $match:{flag:Flag.nuevo}
+        $match:{usuario:user.id,flag:Flag.nuevo}
       }
     ])
     return ticket ;
@@ -144,7 +147,27 @@ export class TicketService {
   }
   }
 
+  
 
-
+  async listarTicketArea(user:payloadI){
+      const area = user.area
+      console.log(area);
+      
+      const tickets =  this.TicketSchema.aggregate([
+        {
+          $match:{ area:area, flag:Flag.nuevo }
+        },
+        {
+          $lookup:{
+            from:'imagens',
+            foreignField:'ticket',
+            localField:'_id',
+            as:'imagenes'
+          }
+        }
+      ])
+        
+      return tickets
+  }
 
 }

@@ -14,4 +14,6 @@ export class CreateTicketDto {
          
         imagen:Express.Multer.File[]=[]
 
+        usuario:Types.ObjectId
+
 }

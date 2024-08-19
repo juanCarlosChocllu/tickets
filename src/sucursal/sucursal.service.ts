@@ -1,15 +1,20 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Sucursal } from './schema/sucursal.schema';
 import { Model } from 'mongoose';
 import { Flag } from 'src/enums/enum.flag';
+import { constants } from 'buffer';
 
 @Injectable()
 export class SucursalService {
   constructor(@InjectModel(Sucursal.name) private readonly SucursalSchema:Model<Sucursal> ){}
-  create(createSucursalDto: CreateSucursalDto) {
+  async create(createSucursalDto: CreateSucursalDto) {
+    const sucursal = await this.SucursalSchema.findOne({nombre:createSucursalDto.nombre, flag:Flag.nuevo}).exec()
+    if(sucursal){
+      throw new ConflictException('Ya existe la sucursal')
+    }
     this.SucursalSchema.create(createSucursalDto)
     return { status:HttpStatus.CREATED};
   }

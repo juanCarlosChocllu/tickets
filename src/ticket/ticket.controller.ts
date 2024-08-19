@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, BadRequestException, UseGuards, Req } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -7,25 +7,42 @@ import { configuracionMulter } from './util/multer';
 import { validarImagenes } from './util/validar.imagenes';
 import { Types } from 'mongoose';
 import { MongoIdValidationPipe } from 'src/util/validar.param.util';
-
+import { TokenGuard } from 'src/autenticacion/guards/token.guard';
+import { payloadI } from 'src/autenticacion/interface/payload.interface';
+@UseGuards(TokenGuard)
 @Controller('ticket')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
   
   @Post("create")
-  @UseInterceptors(FilesInterceptor('files', 3,configuracionMulter))
-  create(@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {    
+  @UseInterceptors( FilesInterceptor('files', 3,configuracionMulter))
+  create(@Req() request:Express.Application,@UploadedFiles() files: Array<Express.Multer.File>,@Body() createTicketDto:CreateTicketDto) {    
     validarImagenes(files)
+    const user:payloadI = request['user']
     createTicketDto.imagen= files
+    createTicketDto.usuario= user.id
     return this.ticketService.create(createTicketDto)
   }
 
 
   @Get('listar')
-  findAll() {
-    return this.ticketService.findAll();
+  findAll(@Req() request:Express.Application) {
+    const user:payloadI = request['user']
+    return this.ticketService.findAll(user);
   }
+
+
+
+  @Get('listar/area')
+  listarTicketArea(@Req() request:Express.Application) {
+    const user:payloadI = request['user']
+    return this.ticketService.listarTicketArea(user);
+  }
+  
+
+  
+
 
   @Get(':id')
   findOne(@Param('id',MongoIdValidationPipe) id: string) {

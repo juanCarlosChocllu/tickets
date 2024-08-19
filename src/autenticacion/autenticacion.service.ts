@@ -3,6 +3,8 @@ import { AutenticacionDto } from './dto/autenticacion.dto';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import * as bcrypt from "bcrypt"
 import { JwtService } from '@nestjs/jwt';
+import { Area } from 'src/areas/schemas/area.schema';
+import { payloadI } from './interface/payload.interface';
 
 @Injectable()
 export class AutenticacionService {
@@ -16,12 +18,11 @@ export class AutenticacionService {
     if(usuario){
         const contrasena = await bcrypt.compare(autenticacionDto.contrasena, usuario.contrasena)
         if(contrasena){ 
-            const payload = { id: usuario._id};
+            const payload:payloadI = { id: usuario._id, area:usuario.area};
            const token = await this.jwtService.signAsync(payload)
             return { status:HttpStatus.OK, token}
         }else{
           throw new UnauthorizedException('Contarsena invalida')
-           
         }
         
     }

@@ -21,6 +21,4 @@ export class CreateUsuarioDto {
     @IsOptional()
     @IsMongoId()
     area:Types.ObjectId
-
-
 }
