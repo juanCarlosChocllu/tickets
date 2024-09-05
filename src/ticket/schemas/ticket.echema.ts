@@ -5,9 +5,8 @@ import { Flag } from 'src/enums/enum.flag';
 
 @Schema()
 export class Ticket {
-
   @Prop()
-  codigoTicket :string
+  codigoTicket: string;
 
   @Prop()
   descripcion: string;
@@ -18,8 +17,8 @@ export class Ticket {
   @Prop({ type: String, enum: EstadoEnum, default: EstadoEnum.Pendiente })
   estado: EstadoEnum;
 
-  @Prop({type:Types.ObjectId, ref:'Sucursal'})
-  sucursal:Types.ObjectId
+  @Prop({ type: Types.ObjectId, ref: 'Sucursal' })
+  sucursal: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Area' })
   area: Types.ObjectId;

@@ -11,10 +11,12 @@ import {
   ImagenSchema,
 } from './schemas/ticket.echema';
 import { SucursalModule } from 'src/sucursal/sucursal.module';
+import { UsuariosModule } from 'src/usuarios/usuarios.module';
 
 @Module({
   imports: [
     SucursalModule,
+    UsuariosModule,
     MulterModule.register({
       dest: './uploads',
     }),

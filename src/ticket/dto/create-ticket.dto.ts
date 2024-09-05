@@ -16,8 +16,7 @@ export class CreateTicketDto {
 
   usuario: Types.ObjectId;
 
-  codigoTicket:string
+  codigoTicket: string;
 
-  sucursal:Types.ObjectId
-  
+  sucursal: Types.ObjectId;
 }

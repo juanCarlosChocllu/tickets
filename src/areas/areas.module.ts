@@ -10,6 +10,6 @@ import { Area, AreaSchema } from './schemas/area.schema';
   ],
   controllers: [AreasController],
   providers: [AreasService],
-  exports:[AreasService]
+  exports: [AreasService],
 })
 export class AreasModule {}

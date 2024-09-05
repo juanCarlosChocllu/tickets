@@ -1,4 +1,9 @@
-import { ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -29,8 +34,8 @@ export class SucursalService {
     return this.SucursalSchema.find({ flag: Flag.nuevo }).select('nombre');
   }
 
- async  findOne(id: string) {
-    const sucursal = await this.validarSucursal(id)
+  async findOne(id: string) {
+    const sucursal = await this.validarSucursal(id);
     return sucursal;
   }
 
@@ -43,7 +48,10 @@ export class SucursalService {
   }
 
   public async validarSucursal(id: string) {
-    const sucursal = await this.SucursalSchema.findOne({ _id: id, flag: Flag.nuevo });
+    const sucursal = await this.SucursalSchema.findOne({
+      _id: id,
+      flag: Flag.nuevo,
+    });
     if (!sucursal) {
       throw new NotFoundException('No se encontro la sucursal');
     }

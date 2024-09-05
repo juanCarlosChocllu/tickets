@@ -26,12 +26,12 @@ import { types } from 'util';
 import { Roles } from 'src/autenticacion/decorator/roles.decorator';
 import { rolEnum } from 'src/enums/rol.enum';
 import { RolGuard } from 'src/autenticacion/guards/rol.guard';
-@UseGuards(TokenGuard)
+@UseGuards(TokenGuard, RolGuard)
 @Controller('ticket')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
-
   @Post('create')
+  @Roles([rolEnum.Administrador])
   @UseInterceptors(FilesInterceptor('files', 3, configuracionMulter))
   create(
     @Req() request: Express.Application,
@@ -41,9 +41,9 @@ export class TicketController {
     validarImagenes(files);
     const user: payloadI = request['user'];
     createTicketDto.imagen = files;
-    createTicketDto.area = new Types.ObjectId(createTicketDto.area)
+    createTicketDto.area = new Types.ObjectId(createTicketDto.area);
     createTicketDto.usuario = new Types.ObjectId(user.id);
-    createTicketDto.sucursal = new Types.ObjectId(user.sucursal)
+    createTicketDto.sucursal = new Types.ObjectId(user.sucursal);
     return this.ticketService.create(createTicketDto);
   }
 
@@ -54,7 +54,7 @@ export class TicketController {
   }
 
   @Get('listar/area')
- @Roles([rolEnum.Administrador])
+  @Roles([rolEnum.Administrador])
   listarTicketArea(@Req() request: Express.Application) {
     const user: payloadI = request['user'];
     return this.ticketService.listarTicketArea(user);
@@ -64,7 +64,7 @@ export class TicketController {
   findOne(@Param('id', MongoIdValidationPipe) id: string) {
     return this.ticketService.findOne(id);
   }
-
+  @Roles([rolEnum.Administrador])
   @Patch('actualizar/:id')
   @UseInterceptors(FilesInterceptor('files', 3, configuracionMulter))
   update(

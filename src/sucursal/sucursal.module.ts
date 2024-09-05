@@ -12,6 +12,6 @@ import { Sucursal, SucursalSchema } from './schema/sucursal.schema';
   ],
   controllers: [SucursalController],
   providers: [SucursalService],
-  exports:[SucursalService]
+  exports: [SucursalService],
 })
 export class SucursalModule {}

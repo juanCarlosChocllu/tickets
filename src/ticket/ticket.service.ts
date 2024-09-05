@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -27,26 +28,23 @@ export class TicketService {
   constructor(
     @InjectModel(Ticket.name) private readonly TicketSchema: Model<Ticket>,
     @InjectModel(Imagen.name) private readonly ImagentSchema: Model<Imagen>,
-    private readonly sucursalService:SucursalService
+    private readonly sucursalService: SucursalService,
   ) {}
   async create(createTicketDto: CreateTicketDto) {
-    
     try {
-      const codigo:string= await this.generarCodigo(createTicketDto.sucursal)
-      createTicketDto.codigoTicket= codigo
+      const codigo: string = await this.generarCodigo(createTicketDto.sucursal);
+      createTicketDto.codigoTicket = codigo;
       const ticket = await this.TicketSchema.create(createTicketDto);
       await this.createImagen(ticket._id, createTicketDto);
       return {
-        status:HttpStatus.CREATED,
-        ticket
+        status: HttpStatus.CREATED,
+        ticket,
       };
     } catch (error) {
-   
-      
-      if(error.status ===  404){
-         throw new NotFoundException(error.message)
+      if (error.status === 404) {
+        throw new NotFoundException(error.message);
       }
-          
+
       throw new HttpException(
         'Unprocessable entity',
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -121,10 +119,14 @@ export class TicketService {
 
   async update(id: string, updateTicketDto: UpdateTicketDto) {
     const ticket = await this.TicketSchema.findOne({ _id: id }).exec();
+
     if (!ticket) {
       throw new NotFoundException('Ticket no encontrada');
     }
-
+    const tiempoLimente = this.vericarTiempo(ticket);
+    if (!tiempoLimente) {
+      throw new UnauthorizedException();
+    }
     if (
       updateTicketDto.idImagenes &&
       updateTicketDto.idImagenes.length > 0 &&
@@ -186,10 +188,10 @@ export class TicketService {
   async listarTicketArea(user: payloadI) {
     const area = user.area;
     console.log(area);
-    
+
     const tickets = this.TicketSchema.aggregate([
       {
-        $match: { area:new Types.ObjectId(area), flag: Flag.nuevo },
+        $match: { area: new Types.ObjectId(area), flag: Flag.nuevo },
       },
       {
         $lookup: {
@@ -204,15 +206,37 @@ export class TicketService {
     return tickets;
   }
 
-  private async generarCodigo(idSucursal:Types.ObjectId){
-    const sucursal = await this.sucursalService.findOne(`${idSucursal}`)
-    const numDocumento:number = await this.TicketSchema.countDocuments({flag:Flag.nuevo, sucursal:new Types.ObjectId(idSucursal)}) + 1
-      const nombreSucursal:string[] = sucursal.nombre.split(' ');      
-     const segmento1: string = nombreSucursal[0].toUpperCase().slice(0,3); 
-     const segmento2: string = nombreSucursal[1]? nombreSucursal[1].toUpperCase().slice(0,3):''; 
-     const s:string =  segmento2 ? '-'+ segmento2: ''
-     const codigoTicket:string = nombreSucursal.length > 1 ?  'TKT-'+ segmento1 + s +'-'+ numDocumento:'TKT-'+ nombreSucursal[0] + s +'-'+ numDocumento
-      return codigoTicket
-   
+  private async generarCodigo(idSucursal: Types.ObjectId) {
+    const sucursal = await this.sucursalService.findOne(`${idSucursal}`);
+    const numDocumento: number =
+      (await this.TicketSchema.countDocuments({
+        flag: Flag.nuevo,
+        sucursal: new Types.ObjectId(idSucursal),
+      })) + 1;
+    const nombreSucursal: string[] = sucursal.nombre.split(' ');
+    const segmento1: string = nombreSucursal[0].toUpperCase().slice(0, 3);
+    const segmento2: string = nombreSucursal[1]
+      ? nombreSucursal[1].toUpperCase().slice(0, 3)
+      : '';
+    const s: string = segmento2 ? '-' + segmento2 : '';
+    const codigoTicket: string =
+      nombreSucursal.length > 1
+        ? 'TKT-' + segmento1 + s + '-' + numDocumento
+        : 'TKT-' + nombreSucursal[0] + s + '-' + numDocumento;
+    return codigoTicket;
+  }
+
+  private vericarTiempo(ticket: Ticket) {
+    const fecha = ticket.fechaCreacion;
+    const fechaHoy = new Date();
+    const date = new Date(fecha);
+    const milisegundosHoy = fechaHoy.getTime();
+    const milisegundosTicketTicket = date.getTime();
+    const milisegundos = milisegundosHoy - milisegundosTicketTicket;
+    const minutosDiferencia = milisegundos / (60 * 1000);
+    if (minutosDiferencia < 30) {
+      return true;
+    }
+    return false;
   }
 }

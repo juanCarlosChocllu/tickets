@@ -27,13 +27,17 @@ export class AutenticacionService {
         usuario.contrasena,
       );
       if (contrasena) {
-        const payload: payloadI = { id: usuario._id, area: usuario.area, sucursal: usuario.sucursal };
+        const payload: payloadI = {
+          id: usuario._id,
+          area: usuario.area,
+          sucursal: usuario.sucursal,
+        };
         const token = await this.jwtService.signAsync(payload);
-        return { 
-       
+        return {
           status: HttpStatus.OK,
-          rol:usuario.rol,
-           token };
+          rol: usuario.rol,
+          token,
+        };
       } else {
         throw new UnauthorizedException('Contarsena invalida');
       }

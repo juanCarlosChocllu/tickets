@@ -19,10 +19,10 @@ export class Usuario {
   sucursal: Types.ObjectId;
   @Prop({ type: Types.ObjectId, ref: 'area' })
   area: Types.ObjectId;
-  
+
   @Prop()
-  rol:string
-  
+  rol: string;
+
   @Prop({ type: Date, default: Date.now() })
   fechaCreacion: Date;
   @Prop({ type: String, enum: Flag, default: Flag.nuevo })

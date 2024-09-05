@@ -25,8 +25,8 @@ export class CreateUsuarioDto {
   sucursal: Types.ObjectId;
 
   @IsEnum(rolEnum)
-  rol:string
-  
+  rol: string;
+
   @IsMongoId()
   area: Types.ObjectId;
 }

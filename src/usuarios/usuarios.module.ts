@@ -15,6 +15,5 @@ import { AreasModule } from 'src/areas/areas.module';
   controllers: [UsuariosController],
   providers: [UsuariosService],
   exports: [UsuariosService],
-  
 })
 export class UsuariosModule {}

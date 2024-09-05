@@ -18,19 +18,21 @@ import { SucursalService } from 'src/sucursal/sucursal.service';
 export class UsuariosService {
   constructor(
     @InjectModel(Usuario.name) private readonly UsuarioSchema: Model<Usuario>,
-    private readonly areaService:AreasService,
-    private readonly sucursalService:SucursalService
+    private readonly areaService: AreasService,
+    private readonly sucursalService: SucursalService,
   ) {}
   async create(createUsuarioDto: CreateUsuarioDto) {
-    const area = await this.areaService.validarArea(`${createUsuarioDto.area}`)
-    const sucursal = await this.sucursalService.validarSucursal(`${createUsuarioDto.sucursal}`)
+    const area = await this.areaService.validarArea(`${createUsuarioDto.area}`);
+    const sucursal = await this.sucursalService.validarSucursal(
+      `${createUsuarioDto.sucursal}`,
+    );
     createUsuarioDto.sucursal = new Types.ObjectId(sucursal._id);
     createUsuarioDto.area = new Types.ObjectId(area._id);
     const userExiste = await this.UsuarioSchema.findOne({
       usuario: createUsuarioDto.usuario,
       flag: Flag.nuevo,
     }).exec();
-    
+
     if (userExiste) {
       throw new ConflictException('El usuario ya existe');
     }
