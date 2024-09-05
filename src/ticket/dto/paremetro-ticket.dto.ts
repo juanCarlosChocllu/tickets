@@ -1,7 +1,6 @@
-import { IsMongoId } from "class-validator";
-import { Types } from "mongoose";
+import { IsMongoId } from 'class-validator';
+import { Types } from 'mongoose';
 
-export class ParametrosTicketDto{
-    
-    id:Types.ObjectId
+export class ParametrosTicketDto {
+  id: Types.ObjectId;
 }

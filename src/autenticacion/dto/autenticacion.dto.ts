@@ -1,9 +1,9 @@
-import { IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
 export class AutenticacionDto {
-    @IsString()
-    usuario:string
-    
-    @IsString()
-    contrasena:string
+  @IsString()
+  usuario: string;
+
+  @IsString()
+  contrasena: string;
 }

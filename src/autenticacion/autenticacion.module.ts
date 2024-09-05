@@ -4,12 +4,16 @@ import { AutenticacionController } from './autenticacion.controller';
 import { UsuariosModule } from 'src/usuarios/usuarios.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants/jwt.constants';
+import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Module({
-  imports:[JwtModule.register({
-    global: true,
-    secret: jwtConstants.secret,
-  }),UsuariosModule],
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+    }),
+    UsuariosModule,
+  ],
   controllers: [AutenticacionController],
   providers: [AutenticacionService],
 })

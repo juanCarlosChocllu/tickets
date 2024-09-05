@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,22 +9,29 @@ import { constants } from 'buffer';
 
 @Injectable()
 export class SucursalService {
-  constructor(@InjectModel(Sucursal.name) private readonly SucursalSchema:Model<Sucursal> ){}
+  constructor(
+    @InjectModel(Sucursal.name)
+    private readonly SucursalSchema: Model<Sucursal>,
+  ) {}
   async create(createSucursalDto: CreateSucursalDto) {
-    const sucursal = await this.SucursalSchema.findOne({nombre:createSucursalDto.nombre, flag:Flag.nuevo}).exec()
-    if(sucursal){
-      throw new ConflictException('Ya existe la sucursal')
+    const sucursal = await this.SucursalSchema.findOne({
+      nombre: createSucursalDto.nombre,
+      flag: Flag.nuevo,
+    }).exec();
+    if (sucursal) {
+      throw new ConflictException('Ya existe la sucursal');
     }
-    this.SucursalSchema.create(createSucursalDto)
-    return { status:HttpStatus.CREATED};
+    this.SucursalSchema.create(createSucursalDto);
+    return { status: HttpStatus.CREATED };
   }
 
   findAll() {
-    return  this.SucursalSchema.find({flag:Flag.nuevo}).select('nombre');
+    return this.SucursalSchema.find({ flag: Flag.nuevo }).select('nombre');
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sucursal`;
+ async  findOne(id: string) {
+    const sucursal = await this.validarSucursal(id)
+    return sucursal;
   }
 
   update(id: number, updateSucursalDto: UpdateSucursalDto) {
@@ -33,5 +40,13 @@ export class SucursalService {
 
   remove(id: number) {
     return `This action removes a #${id} sucursal`;
+  }
+
+  public async validarSucursal(id: string) {
+    const sucursal = await this.SucursalSchema.findOne({ _id: id, flag: Flag.nuevo });
+    if (!sucursal) {
+      throw new NotFoundException('No se encontro la sucursal');
+    }
+    return sucursal;
   }
 }

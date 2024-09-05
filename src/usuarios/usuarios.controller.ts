@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -24,12 +32,15 @@ export class UsuariosController {
   }
 
   @Patch(':id')
-  update(@Param('id',MongoIdValidationPipe) id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+  update(
+    @Param('id', MongoIdValidationPipe) id: string,
+    @Body() updateUsuarioDto: UpdateUsuarioDto,
+  ) {
     return this.usuariosService.update(id, updateUsuarioDto);
   }
 
   @Delete(':id')
-  softDelete(@Param('id',MongoIdValidationPipe) id: string) {
+  softDelete(@Param('id', MongoIdValidationPipe) id: string) {
     return this.usuariosService.softDelete(id);
   }
 }

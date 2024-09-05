@@ -1,5 +1,4 @@
-
-export enum EstadoEnum{
-    Completado='Completado',
-    Pendiente='Pendiente'
+export enum EstadoEnum {
+  Completado = 'Completado',
+  Pendiente = 'Pendiente',
 }

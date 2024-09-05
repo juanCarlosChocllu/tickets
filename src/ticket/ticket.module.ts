@@ -4,21 +4,30 @@ import { TicketController } from './ticket.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Imagen, Ticket, TicketSchema,ImagenSchema } from './schemas/ticket.echema';
+import {
+  Imagen,
+  Ticket,
+  TicketSchema,
+  ImagenSchema,
+} from './schemas/ticket.echema';
+import { SucursalModule } from 'src/sucursal/sucursal.module';
 
 @Module({
-  imports:[
+  imports: [
+    SucursalModule,
     MulterModule.register({
-      dest:"./uploads"
+      dest: './uploads',
     }),
     MongooseModule.forFeature([
-        {
-          name:Ticket.name, schema:TicketSchema
-        },
-        {
-          name:Imagen.name, schema:ImagenSchema
-        }
-    ])
+      {
+        name: Ticket.name,
+        schema: TicketSchema,
+      },
+      {
+        name: Imagen.name,
+        schema: ImagenSchema,
+      },
+    ]),
   ],
   controllers: [TicketController],
   providers: [TicketService],

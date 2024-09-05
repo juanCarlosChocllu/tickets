@@ -1,7 +1,7 @@
-import { Types } from "mongoose"
+import { Types } from 'mongoose';
 
-
-export  interface payloadI{
-    id:Types.ObjectId
-    area:Types.ObjectId
+export interface payloadI {
+  id: Types.ObjectId;
+  area: Types.ObjectId;
+  sucursal: Types.ObjectId;
 }

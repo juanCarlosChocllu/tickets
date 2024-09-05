@@ -1,5 +1,5 @@
-import { memoryStorage } from "multer";
+import { memoryStorage } from 'multer';
 
 export const configuracionMulter = {
-    storage: memoryStorage(),
-  };
+  storage: memoryStorage(),
+};

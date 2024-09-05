@@ -5,8 +5,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Sucursal, SucursalSchema } from './schema/sucursal.schema';
 
 @Module({
-  imports:[MongooseModule.forFeature([{name:Sucursal.name, schema:SucursalSchema}])],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Sucursal.name, schema: SucursalSchema },
+    ]),
+  ],
   controllers: [SucursalController],
   providers: [SucursalService],
+  exports:[SucursalService]
 })
 export class SucursalModule {}

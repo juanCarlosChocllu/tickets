@@ -8,11 +8,10 @@ import { AreasModule } from './areas/areas.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 @Module({
-
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads', 'webp'),
-      serveRoot: '/uploads/webp', 
+      serveRoot: '/uploads/webp',
     }),
     MongooseModule.forRoot('mongodb://localhost:27017/sistema-tickets'),
 
@@ -24,11 +23,9 @@ import { join } from 'path';
 
     AutenticacionModule,
 
-    
-
-    AreasModule,],
+    AreasModule,
+  ],
   controllers: [],
   providers: [],
-  
 })
 export class AppModule {}
