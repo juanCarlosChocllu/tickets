@@ -1,6 +1,7 @@
 import { IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
 import { PrioridadEnum } from '../enum/prioridad.enum';
 import { Types } from 'mongoose';
+import { flagService } from '../enum/flag.servicio.enum';
 
 export class CreateTicketDto {
   @IsString()

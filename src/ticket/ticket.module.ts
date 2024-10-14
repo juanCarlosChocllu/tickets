@@ -33,5 +33,6 @@ import { UsuariosModule } from 'src/usuarios/usuarios.module';
   ],
   controllers: [TicketController],
   providers: [TicketService],
+  
 })
 export class TicketModule {}

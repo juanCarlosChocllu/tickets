@@ -22,6 +22,9 @@ import { SucursalService } from 'src/sucursal/sucursal.service';
 import { log } from 'console';
 import { Sucursal } from 'src/sucursal/schema/sucursal.schema';
 import { types } from 'util';
+import { UsuariosService } from 'src/usuarios/usuarios.service';
+import { flagService } from './enum/flag.servicio.enum';
+import { rolEnum } from 'src/enums/rol.enum';
 
 @Injectable()
 export class TicketService {
@@ -29,9 +32,11 @@ export class TicketService {
     @InjectModel(Ticket.name) private readonly TicketSchema: Model<Ticket>,
     @InjectModel(Imagen.name) private readonly ImagentSchema: Model<Imagen>,
     private readonly sucursalService: SucursalService,
+    private readonly usuarioService:UsuariosService
   ) {}
+
   async create(createTicketDto: CreateTicketDto) {
-    try {
+    try {      
       const codigo: string = await this.generarCodigo(createTicketDto.sucursal);
       createTicketDto.codigoTicket = codigo;
       const ticket = await this.TicketSchema.create(createTicketDto);
@@ -41,6 +46,8 @@ export class TicketService {
         ticket,
       };
     } catch (error) {
+      console.log(error);
+      
       if (error.status === 404) {
         throw new NotFoundException(error.message);
       }
@@ -52,7 +59,7 @@ export class TicketService {
     }
   }
 
-  async createImagen(ticket: Types.ObjectId, createTicketDto: CreateTicketDto) {
+  async createImagen(ticket: Types.ObjectId, createTicketDto: CreateTicketDto) { 
     const img = this.convertirImagenWbp(createTicketDto.imagen);
     for (let i of await img) {
       const imgDto = {
@@ -64,6 +71,8 @@ export class TicketService {
   }
 
   async convertirImagenWbp(imagen: Express.Multer.File[]) {
+   
+    
     const rutasImg: string[] = [];
     const outputDir = join(__dirname, '../../uploads/webp');
     if (!fs.existsSync(outputDir)) {
@@ -79,7 +88,9 @@ export class TicketService {
     return rutasImg;
   }
 
+
   async findAll(user: payloadI) {
+
     const ticket = await this.TicketSchema.aggregate([
       {
         $lookup: {
@@ -90,9 +101,10 @@ export class TicketService {
         },
       },
       {
-        $match: { usuario: user.id, flag: Flag.nuevo },
+        $match: { usuario: new Types.ObjectId(user.id), flag: Flag.nuevo },
       },
     ]);
+
     return ticket;
   }
 
@@ -187,8 +199,6 @@ export class TicketService {
 
   async listarTicketArea(user: payloadI) {
     const area = user.area;
-    console.log(area);
-
     const tickets = this.TicketSchema.aggregate([
       {
         $match: { area: new Types.ObjectId(area), flag: Flag.nuevo },
@@ -239,4 +249,23 @@ export class TicketService {
     }
     return false;
   }
+
+
+
+  async subirImagenReparada(id: string,files:Array<Express.Multer.File>){
+   const file= await  this.convertirImagenWbp(files)
+   for(let url of file){
+      const data={
+        ticket: new Types.ObjectId(id),
+        urlImagen:url,
+        flagServicio: flagService.reparada
+
+      }
+        await this.ImagentSchema.create(data)
+   }
+
+   return {status:HttpStatus.CREATED}
+  
+  }
+
 }

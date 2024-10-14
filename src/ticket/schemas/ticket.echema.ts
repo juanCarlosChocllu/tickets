@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { EstadoEnum } from '../enum/estado.enum';
 import { Flag } from 'src/enums/enum.flag';
+import { flagService } from '../enum/flag.servicio.enum';
 
 @Schema()
 export class Ticket {
@@ -29,6 +30,8 @@ export class Ticket {
   @Prop({ type: Date, default: Date.now() })
   fechaCreacion: Date;
 
+  
+
   @Prop({ type: String, enum: Flag, default: Flag.nuevo })
   flag: Flag;
 }
@@ -41,6 +44,12 @@ export class Imagen {
   ticket: Types.ObjectId;
   @Prop()
   urlImagen: string;
+  
+  @Prop({ type: String, enum: flagService, default: flagService.no_reparada})
+  flagServicio: flagService;
+
+  @Prop({ type: String, enum: Flag, default: Flag.nuevo })
+  flag: Flag;
 }
 
 export const ImagenSchema = SchemaFactory.createForClass(Imagen);

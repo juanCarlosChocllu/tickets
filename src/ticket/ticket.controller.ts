@@ -32,7 +32,7 @@ export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
   @Post('create')
   @Roles([rolEnum.Administrador])
-  @UseInterceptors(FilesInterceptor('files', 3, configuracionMulter))
+  @UseInterceptors(FilesInterceptor('files', 2, configuracionMulter))
   create(
     @Req() request: Express.Application,
     @UploadedFiles() files: Array<Express.Multer.File>,
@@ -48,8 +48,9 @@ export class TicketController {
   }
 
   @Get('listar')
+  @Roles([rolEnum.Administrador])
   findAll(@Req() request: Express.Application) {
-    const user: payloadI = request['user'];
+    const user: payloadI = request['user'];    
     return this.ticketService.findAll(user);
   }
 
@@ -66,7 +67,7 @@ export class TicketController {
   }
   @Roles([rolEnum.Administrador])
   @Patch('actualizar/:id')
-  @UseInterceptors(FilesInterceptor('files', 3, configuracionMulter))
+  @UseInterceptors(FilesInterceptor('files', 2, configuracionMulter))
   update(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Param('id', MongoIdValidationPipe) id: string,
@@ -93,4 +94,15 @@ export class TicketController {
   softDelete(@Param('id', MongoIdValidationPipe) id: string) {
     return this.ticketService.softDelete(id);
   }
+
+  @Roles([rolEnum.Administrador])
+  @UseInterceptors(FilesInterceptor('files', 2, configuracionMulter))
+  @Post('imagen/reparada/:id')
+  subirImagenReparada(@Param('id', MongoIdValidationPipe) id: string ,     @UploadedFiles() files: Array<Express.Multer.File>,){
+    validarImagenes(files);
+   
+
+    return this.ticketService.subirImagenReparada(id, files)
+  }
+
 }
