@@ -18,7 +18,7 @@ import { SucursalService } from 'src/sucursal/sucursal.service';
 export class UsuariosService {
   constructor(
     @InjectModel(Usuario.name) private readonly UsuarioSchema: Model<Usuario>,
-    private readonly areaService: AreasService,
+  private readonly areaService: AreasService,
     private readonly sucursalService: SucursalService,
   ) {}
   async create(createUsuarioDto: CreateUsuarioDto) {

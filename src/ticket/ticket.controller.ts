@@ -30,8 +30,10 @@ import { RolGuard } from 'src/autenticacion/guards/rol.guard';
 @Controller('ticket')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
+
+
   @Post('create')
-  @Roles([rolEnum.Administrador])
+  @Roles([rolEnum.Administrador, rolEnum.Usuario])
   @UseInterceptors(FilesInterceptor('files', 2, configuracionMulter))
   create(
     @Req() request: Express.Application,
@@ -48,14 +50,14 @@ export class TicketController {
   }
 
   @Get('listar')
-  @Roles([rolEnum.Administrador])
+  @Roles([rolEnum.Administrador, rolEnum.Usuario])
   findAll(@Req() request: Express.Application) {
     const user: payloadI = request['user'];    
     return this.ticketService.findAll(user);
   }
 
   @Get('listar/area')
-  @Roles([rolEnum.Administrador])
+  @Roles([rolEnum.Administrador, rolEnum.AdministradorArea])
   listarTicketArea(@Req() request: Express.Application) {
     const user: payloadI = request['user'];
     return this.ticketService.listarTicketArea(user);
@@ -65,7 +67,7 @@ export class TicketController {
   findOne(@Param('id', MongoIdValidationPipe) id: string) {
     return this.ticketService.findOne(id);
   }
-  @Roles([rolEnum.Administrador])
+  @Roles([rolEnum.Administrador, rolEnum.Usuario])
   @Patch('actualizar/:id')
   @UseInterceptors(FilesInterceptor('files', 2, configuracionMulter))
   update(
@@ -89,13 +91,13 @@ export class TicketController {
     }
     return this.ticketService.update(id, updateTicketDto);
   }
-
+  @Roles([rolEnum.Administrador, rolEnum.Usuario])
   @Delete('delete/:id')
   softDelete(@Param('id', MongoIdValidationPipe) id: string) {
     return this.ticketService.softDelete(id);
   }
 
-  @Roles([rolEnum.Administrador])
+  @Roles([rolEnum.Administrador, rolEnum.AdministradorArea])
   @UseInterceptors(FilesInterceptor('files', 2, configuracionMulter))
   @Post('imagen/reparada/:id')
   subirImagenReparada(@Param('id', MongoIdValidationPipe) id: string ,     @UploadedFiles() files: Array<Express.Multer.File>,){

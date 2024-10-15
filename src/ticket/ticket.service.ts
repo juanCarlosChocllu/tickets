@@ -32,7 +32,7 @@ export class TicketService {
     @InjectModel(Ticket.name) private readonly TicketSchema: Model<Ticket>,
     @InjectModel(Imagen.name) private readonly ImagentSchema: Model<Imagen>,
     private readonly sucursalService: SucursalService,
-    private readonly usuarioService:UsuariosService
+
   ) {}
 
   async create(createTicketDto: CreateTicketDto) {
